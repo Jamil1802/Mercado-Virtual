@@ -1,4 +1,5 @@
 package com.mercadodigital.mercado.model;
 
-public class Administrador {
+public class Administrador extends Usuario{
+
 }
