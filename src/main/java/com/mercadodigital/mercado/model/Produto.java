@@ -77,4 +77,24 @@ public class Produto {
     public void setDisponivel(boolean disponivel) {
         this.disponivel = disponivel;
     }
+
+    public void reduzirEstoque(int quantidade) {
+        if (quantidade <= 0) return;
+        if (estoque >= quantidade) {
+            estoque -= quantidade;
+            if (estoque == 0) {
+                this.disponivel = false;
+            }
+        } else {
+            throw new IllegalArgumentException("Estoque insuficiente para a quantidade solicitada.");
+        }
+    }
+
+    public double calcularSubtotal(int quantidade) {
+        if (quantidade <= 0) {
+            throw new IllegalArgumentException("Quantidade inválida.");
+        }
+        return preco * quantidade;
+    }
+
 }

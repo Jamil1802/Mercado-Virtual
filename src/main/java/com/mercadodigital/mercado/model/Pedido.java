@@ -18,6 +18,27 @@ public class Pedido {
         this.dataPedido = LocalDateTime.now();
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public int getIdUsuario() {
+        return idUsuario;
+    }
+
+    public List<Integer> getProdutosIds() {
+        return produtosIds;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public LocalDateTime getDataPedido() {
+        return dataPedido;
+    }
+
+
     public void atualizarStatus(String novoStatus) {
         this.status = novoStatus;
     }

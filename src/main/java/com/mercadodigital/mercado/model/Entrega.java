@@ -15,6 +15,26 @@ public class Entrega {
         this.codigoRastreamento = "";
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public int getIdPedido() {
+        return idPedido;
+    }
+
+    public String getEnderecoEntrega() {
+        return enderecoEntrega;
+    }
+
+    public String getStatusEntrega() {
+        return statusEntrega;
+    }
+
+    public String getCodigoRastreamento() {
+        return codigoRastreamento;
+    }
+
     public void atualizarStatus(String novoStatus) {
         this.statusEntrega = novoStatus;
     }
