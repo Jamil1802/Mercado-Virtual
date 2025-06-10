@@ -1,7 +1,14 @@
 package com.mercadodigital.mercado.model;
 
+import jakarta.persistence.*;
+
+//@Table(name = "usuario")
+//@Entity(name = "usuario")
 public class Usuario {
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+//    @Column(name = "nome", length = 150, nullable = false, unique = false)
     private String nome;
     private String email;
     private String senha;
@@ -22,9 +29,9 @@ public class Usuario {
         return id;
     }
 
-//    public void setId(int id) {
-//        this.id = id;
-//    }
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getNome() {
         return nome;
@@ -56,5 +63,16 @@ public class Usuario {
 
     public void setEndereco(String endereco) {
         this.endereco = endereco;
+    }
+
+    @Override
+    public String toString() {
+        return "Usuario{" +
+                "id=" + id +
+                ", nome='" + nome + '\'' +
+                ", email='" + email + '\'' +
+                ", senha='" + senha + '\'' +
+                ", endereco='" + endereco + '\'' +
+                '}';
     }
 }
