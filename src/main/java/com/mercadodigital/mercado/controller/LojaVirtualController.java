@@ -1,52 +1,65 @@
 package com.mercadodigital.mercado.controller;
 
 import com.mercadodigital.mercado.model.LojaVirtual;
+import com.mercadodigital.mercado.repository.LojaVirtualRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@RestController
+@RequestMapping("/lojas")
 public class LojaVirtualController {
-    private Map<Integer, LojaVirtual> lojas = new HashMap<>();
-    private int proximoId = 1;
 
-    public LojaVirtual criarLoja(String nome, String descricao, int idLojista) {
-        LojaVirtual novaLoja = new LojaVirtual(proximoId++, nome, descricao, idLojista);
-        lojas.put(novaLoja.getId(), novaLoja);
-        return novaLoja;
+    @Autowired
+    private LojaVirtualRepository lojaRepository;
+
+    @PostMapping
+    public ResponseEntity<LojaVirtual> criarLoja(@RequestBody LojaVirtual loja) {
+        loja.setAtiva(true);
+        LojaVirtual salva = lojaRepository.save(loja);
+        return ResponseEntity.ok(salva);
     }
 
-    public boolean editarLoja(int idLoja, String novoNome, String novaDescricao) {
-        LojaVirtual loja = lojas.get(idLoja);
-        if (loja != null && loja.isAtiva()) {
-            loja.setNome(novoNome);
-            loja.setDescricao(novaDescricao);
-            return true;
+    @PutMapping("/{id}")
+    public ResponseEntity<?> editarLoja(@PathVariable int id, @RequestBody LojaVirtual atualizada) {
+        LojaVirtual loja = lojaRepository.findById(id).orElse(null);
+        if (loja == null || !loja.isAtiva()) {
+            return ResponseEntity.notFound().build();
         }
-        return false;
+
+        loja.setNome(atualizada.getNome());
+        loja.setDescricao(atualizada.getDescricao());
+        lojaRepository.save(loja);
+
+        return ResponseEntity.ok("Loja atualizada.");
     }
 
-    public boolean deletarLoja(int idLoja) {
-        LojaVirtual loja = lojas.get(idLoja);
-        if (loja != null) {
-            loja.setAtiva(false); // torna a loja invisível para o usuário
-            return true;
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deletarLoja(@PathVariable int id) {
+        LojaVirtual loja = lojaRepository.findById(id).orElse(null);
+        if (loja == null) {
+            return ResponseEntity.notFound().build();
         }
-        return false;
+
+        loja.setAtiva(false);
+        lojaRepository.save(loja);
+        return ResponseEntity.ok("Loja marcada como inativa.");
     }
 
-    public List<LojaVirtual> listarLojas() {
-        List<LojaVirtual> lojasAtivas = new ArrayList<>();
-        for (LojaVirtual loja : lojas.values()) {
-            if (loja.isAtiva()) {
-                lojasAtivas.add(loja);
-            }
-        }
-        return lojasAtivas;
+    @GetMapping
+    public List<LojaVirtual> listarLojasAtivas() {
+        return lojaRepository.findAll().stream()
+                .filter(LojaVirtual::isAtiva)
+                .toList();
     }
 
+    @GetMapping("/admin")
     public List<LojaVirtual> listarTodasLojasParaAdmin() {
-        return new ArrayList<>(lojas.values());
+        return lojaRepository.findAll();
     }
 }

@@ -1,18 +1,25 @@
 package com.mercadodigital.mercado.model;
 
+//import jakarta.persistence.*;
+
 import jakarta.persistence.*;
 
-//@Table(name = "usuario")
-//@Entity(name = "usuario")
+@Table(name = "usuario")
+@Entity(name = "usuario")
 public class Usuario {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.AUTO)
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-//    @Column(name = "nome", length = 150, nullable = false, unique = false)
+
+    @Column(name = "nome", length = 150, nullable = false, unique = false)
     private String nome;
+
+    @Column(unique = true, nullable = false)
     private String email;
     private String senha;
     private String endereco;
+    private boolean ativo;
 
     public Usuario() {
     }
@@ -23,6 +30,7 @@ public class Usuario {
         this.email = email;
         this.senha = senha;
         this.endereco = endereco;
+        this.ativo = true;
     }
 
     public int getId() {
@@ -65,6 +73,14 @@ public class Usuario {
         this.endereco = endereco;
     }
 
+    public boolean isAtiva() {
+        return ativo;
+    }
+
+    public void setAtiva(boolean ativa) {
+        this.ativo = ativo;
+    }
+
     @Override
     public String toString() {
         return "Usuario{" +
@@ -73,6 +89,7 @@ public class Usuario {
                 ", email='" + email + '\'' +
                 ", senha='" + senha + '\'' +
                 ", endereco='" + endereco + '\'' +
+                ", ativo ='" + ativo + '\'' +
                 '}';
     }
 }

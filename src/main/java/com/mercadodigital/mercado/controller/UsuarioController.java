@@ -1,45 +1,68 @@
 package com.mercadodigital.mercado.controller;
 
+import com.mercadodigital.mercado.model.LojaVirtual;
 import com.mercadodigital.mercado.model.Usuario;
+import com.mercadodigital.mercado.repository.UsuarioRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@RestController
+@RequestMapping("/usuarios")
 public class UsuarioController {
-    private Map<String, Usuario> usuarios = new HashMap<>(); // simulando base de dados
-    private int proximoId = 1;
-    private Usuario usuarioLogado = null;
 
-    public boolean registrarUsuario(String nome, String email, String senha, String endereco) {
-        if (usuarios.containsKey(email)) {
-            return false; // usuário já existe
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
+    @PostMapping
+    public ResponseEntity<?> registrarUsuario(@RequestBody Usuario usuario) {
+        if (usuarioRepository.findByEmail(usuario.getEmail()) != null) {
+            return ResponseEntity.badRequest().body("Usuário já existe.");
         }
-        Usuario novoUsuario = new Usuario(proximoId++, nome, email, senha, endereco);
-        usuarios.put(email, novoUsuario);
-        return true;
+        usuarioRepository.save(usuario);
+        return ResponseEntity.ok("Usuário registrado com sucesso.");
     }
 
-    public boolean login(String email, String senha) {
-        Usuario usuario = usuarios.get(email);
-        return usuario != null && usuario.getSenha().equals(senha);
-    }
-
-    public void logout() {
-        usuarioLogado = null;
-    }
-
-    public boolean editarPerfil(String email, String novoNome, String novaSenha, String novoEndereco) {
-        Usuario usuario = usuarios.get(email);
-        if (usuario != null) {
-            usuario.setNome(novoNome);
-            usuario.setSenha(novaSenha);
-            usuario.setEndereco(novoEndereco);
-            return true;
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody Usuario credenciais) {
+        Usuario usuario = usuarioRepository.findByEmail(credenciais.getEmail());
+        if (usuario != null && usuario.getSenha().equals(credenciais.getSenha())) {
+            return ResponseEntity.ok(usuario);
         }
-        return false;
+        return ResponseEntity.status(401).body("Email ou senha incorretos.");
     }
 
-    public Usuario getUsuarioLogado() {
-        return usuarioLogado;
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deletarPerfil(@PathVariable int id) {
+        Usuario usuario = usuarioRepository.findById(id).orElse(null);
+        if (usuario == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        usuario.setAtiva(false);
+        usuarioRepository.save(usuario);
+        return ResponseEntity.ok("Usuario marcado como inativo.");
+    }
+
+    @PutMapping("/{email}")
+    public ResponseEntity<?> editarPerfil(@PathVariable String email, @RequestBody Usuario atualizacao) {
+        Usuario usuario = usuarioRepository.findByEmail(email);
+        if (usuario == null) return ResponseEntity.notFound().build();
+
+        usuario.setNome(atualizacao.getNome());
+        usuario.setSenha(atualizacao.getSenha());
+        usuario.setEndereco(atualizacao.getEndereco());
+        usuarioRepository.save(usuario);
+
+        return ResponseEntity.ok("Perfil atualizado.");
+    }
+
+    @GetMapping("/{email}")
+    public ResponseEntity<Usuario> getUsuario(@PathVariable String email) {
+        Usuario usuario = usuarioRepository.findByEmail(email);
+        return usuario != null ? ResponseEntity.ok(usuario) : ResponseEntity.notFound().build();
     }
 }

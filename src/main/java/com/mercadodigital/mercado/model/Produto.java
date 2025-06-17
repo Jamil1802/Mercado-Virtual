@@ -1,6 +1,13 @@
 package com.mercadodigital.mercado.model;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "produto")
 public class Produto {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String nome;
     private String descricao;

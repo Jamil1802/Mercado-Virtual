@@ -1,14 +1,26 @@
 package com.mercadodigital.mercado.model;
 
+import jakarta.persistence.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(name = "loja_virtual")
 public class LojaVirtual {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @Column(nullable = false)
     private String nome;
+
     private String descricao;
     private int idLojista;
     private boolean ativa;
+
+    @Transient
     private List<Produto> produtos;
 
     public LojaVirtual() {

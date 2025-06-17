@@ -1,55 +1,65 @@
 package com.mercadodigital.mercado.controller;
 
 import com.mercadodigital.mercado.model.Produto;
+import com.mercadodigital.mercado.repository.ProdutoRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@RestController
+@RequestMapping("/produtos")
 public class ProdutoController {
-    private Map<Integer, Produto> produtos = new HashMap<>();
-    private int proximoId = 1;
 
-    public Produto adicionarProduto(String nome, String descricao, double preco, int estoque, int idLoja) {
-        Produto novoProduto = new Produto(proximoId++, nome, descricao, preco, estoque, idLoja);
-        produtos.put(novoProduto.getId(), novoProduto);
-        return novoProduto;
+    @Autowired
+    private ProdutoRepository produtoRepository;
+
+    @PostMapping
+    public ResponseEntity<Produto> adicionarProduto(@RequestBody Produto produto) {
+        produto.setDisponivel(true);
+        Produto salvo = produtoRepository.save(produto);
+        return ResponseEntity.ok(salvo);
     }
 
-    public boolean editarProduto(int idProduto, String nome, String descricao, double preco, int estoque) {
-        Produto produto = produtos.get(idProduto);
-        if (produto != null && produto.isDisponivel()) {
-            produto.setNome(nome);
-            produto.setDescricao(descricao);
-            produto.setPreco(preco);
-            produto.setEstoque(estoque);
-            return true;
+    @PutMapping("/{id}")
+    public ResponseEntity<?> editarProduto(@PathVariable int id, @RequestBody Produto dados) {
+        Produto produto = produtoRepository.findById(id).orElse(null);
+        if (produto == null || !produto.isDisponivel()) {
+            return ResponseEntity.notFound().build();
         }
-        return false;
+
+        produto.setNome(dados.getNome());
+        produto.setDescricao(dados.getDescricao());
+        produto.setPreco(dados.getPreco());
+        produto.setEstoque(dados.getEstoque());
+
+        produtoRepository.save(produto);
+        return ResponseEntity.ok("Produto atualizado.");
     }
 
-    public boolean removerProduto(int idProduto) {
-        Produto produto = produtos.get(idProduto);
-        if (produto != null) {
-            produto.setDisponivel(false); // invisível para usuários, visível para administradores
-            return true;
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> removerProduto(@PathVariable int id) {
+        Produto produto = produtoRepository.findById(id).orElse(null);
+        if (produto == null) {
+            return ResponseEntity.notFound().build();
         }
-        return false;
+
+        produto.setDisponivel(false);
+        produtoRepository.save(produto);
+        return ResponseEntity.ok("Produto removido (invisível para usuários).");
     }
 
-    public List<Produto> listarProdutosDisponiveisPorLoja(int idLoja) {
-        List<Produto> resultado = new ArrayList<>();
-        for (Produto produto : produtos.values()) {
-            if (produto.isDisponivel() && produto.getIdLoja() == idLoja) {
-                resultado.add(produto);
-            }
-        }
-        return resultado;
+    @GetMapping("/loja/{idLoja}")
+    public List<Produto> listarProdutosDisponiveisPorLoja(@PathVariable int idLoja) {
+        return produtoRepository.findByIdLojaAndDisponivelTrue(idLoja);
     }
 
+    @GetMapping("/admin")
     public List<Produto> listarTodosProdutosParaAdmin() {
-        return new ArrayList<>(produtos.values());
+        return produtoRepository.findAll();
     }
-
 }
