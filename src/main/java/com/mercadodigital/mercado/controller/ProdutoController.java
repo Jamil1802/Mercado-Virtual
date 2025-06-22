@@ -38,7 +38,7 @@ public class ProdutoController {
         produto.setEstoque(dados.getEstoque());
 
         produtoRepository.save(produto);
-        return ResponseEntity.ok("Produto atualizado.");
+        return ResponseEntity.ok("Produto actualizado.");
     }
 
     @DeleteMapping("/{id}")
@@ -50,7 +50,7 @@ public class ProdutoController {
 
         produto.setDisponivel(false);
         produtoRepository.save(produto);
-        return ResponseEntity.ok("Produto removido (invisível para usuários).");
+        return ResponseEntity.ok("Produto removido com sucesso.");
     }
 
     @GetMapping("/loja/{idLoja}")
@@ -61,5 +61,37 @@ public class ProdutoController {
     @GetMapping("/admin")
     public List<Produto> listarTodosProdutosParaAdmin() {
         return produtoRepository.findAll();
+    }
+
+    @GetMapping
+    public List<Produto> listarProdutosDisponiveis() {
+        return produtoRepository.findAll().stream()
+                .filter(Produto::isDisponivel)
+                .toList();
+    }
+
+    @PatchMapping("/{id}/estoque")
+    public ResponseEntity<?> atualizarEstoque(@PathVariable int id, @RequestBody Produto dados) {
+        Produto produto = produtoRepository.findById(id).orElse(null);
+        if (produto == null || !produto.isDisponivel()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        produto.setEstoque(dados.getEstoque());
+        produtoRepository.save(produto);
+        return ResponseEntity.ok("Estoque atualizado.");
+    }
+
+    @PatchMapping("/{id}/preco")
+    public ResponseEntity<?> atualizarPreco(@PathVariable int id, @RequestBody Produto dados) {
+        Produto produto = produtoRepository.findById(id).orElse(null);
+        if (produto == null || !produto.isDisponivel()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        produto.setPreco(dados.getPreco());
+        produtoRepository.save(produto);
+        return ResponseEntity.ok("Preço atualizado.");
+
     }
 }

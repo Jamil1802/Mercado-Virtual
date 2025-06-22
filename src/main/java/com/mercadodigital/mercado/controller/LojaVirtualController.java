@@ -18,6 +18,7 @@ public class LojaVirtualController {
     @Autowired
     private LojaVirtualRepository lojaRepository;
 
+    //Metodo para adicionar lojas
     @PostMapping
     public ResponseEntity<LojaVirtual> criarLoja(@RequestBody LojaVirtual loja) {
         loja.setAtiva(true);
@@ -25,6 +26,7 @@ public class LojaVirtualController {
         return ResponseEntity.ok(salva);
     }
 
+    //Metodo para editar lojas
     @PutMapping("/{id}")
     public ResponseEntity<?> editarLoja(@PathVariable int id, @RequestBody LojaVirtual atualizada) {
         LojaVirtual loja = lojaRepository.findById(id).orElse(null);
@@ -39,6 +41,7 @@ public class LojaVirtualController {
         return ResponseEntity.ok("Loja atualizada.");
     }
 
+    //Metodo para remover lojas
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletarLoja(@PathVariable int id) {
         LojaVirtual loja = lojaRepository.findById(id).orElse(null);
@@ -48,9 +51,10 @@ public class LojaVirtualController {
 
         loja.setAtiva(false);
         lojaRepository.save(loja);
-        return ResponseEntity.ok("Loja marcada como inativa.");
+        return ResponseEntity.ok("Loja removida com sucesso.");
     }
 
+    //Metodo para listar lojas para usuarios normais
     @GetMapping
     public List<LojaVirtual> listarLojasAtivas() {
         return lojaRepository.findAll().stream()
@@ -58,6 +62,7 @@ public class LojaVirtualController {
                 .toList();
     }
 
+    //Metodo para listar lojas para usuarios adminitradores
     @GetMapping("/admin")
     public List<LojaVirtual> listarTodasLojasParaAdmin() {
         return lojaRepository.findAll();

@@ -1,25 +1,28 @@
 package com.mercadodigital.mercado.model;
 
-//import jakarta.persistence.*;
-
 import jakarta.persistence.*;
 
+@Entity
 @Table(name = "usuario")
-@Entity(name = "usuario")
 public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "nome", length = 150, nullable = false, unique = false)
+    @Column(name = "nome", length = 150, nullable = false)
     private String nome;
 
     @Column(unique = true, nullable = false)
     private String email;
+
     private String senha;
     private String endereco;
-    private boolean ativo;
+    private boolean activo;
+
+    @ManyToOne
+    @JoinColumn(name = "id_loja")
+    private LojaVirtual loja;
 
     public Usuario() {
     }
@@ -30,8 +33,10 @@ public class Usuario {
         this.email = email;
         this.senha = senha;
         this.endereco = endereco;
-        this.ativo = true;
+        this.activo = true;
     }
+
+    // Getters e Setters
 
     public int getId() {
         return id;
@@ -73,12 +78,20 @@ public class Usuario {
         this.endereco = endereco;
     }
 
-    public boolean isAtiva() {
-        return ativo;
+    public boolean isActivo() {
+        return activo;
     }
 
-    public void setAtiva(boolean ativa) {
-        this.ativo = ativo;
+    public void setActivo(boolean activo) {
+        this.activo = activo;
+    }
+
+    public LojaVirtual getLoja() {
+        return loja;
+    }
+
+    public void setLoja(LojaVirtual loja) {
+        this.loja = loja;
     }
 
     @Override
@@ -89,7 +102,7 @@ public class Usuario {
                 ", email='" + email + '\'' +
                 ", senha='" + senha + '\'' +
                 ", endereco='" + endereco + '\'' +
-                ", ativo ='" + ativo + '\'' +
+                ", activo=" + activo +
                 '}';
     }
 }

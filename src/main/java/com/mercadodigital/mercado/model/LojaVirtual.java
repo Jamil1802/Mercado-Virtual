@@ -1,8 +1,6 @@
 package com.mercadodigital.mercado.model;
 
 import jakarta.persistence.*;
-
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -17,22 +15,27 @@ public class LojaVirtual {
     private String nome;
 
     private String descricao;
-    private int idLojista;
+
     private boolean ativa;
 
-    @Transient
+    @OneToMany(mappedBy = "loja")
     private List<Produto> produtos;
+
+    @OneToMany(mappedBy = "loja")
+    private List<Usuario> usuarios;
+
+    @OneToOne
+    @JoinColumn(name = "administrador_id")
+    private Administrador administrador;
 
     public LojaVirtual() {
     }
 
-    public LojaVirtual(int id, String nome, String descricao, int idLojista) {
+    public LojaVirtual(int id, String nome, String descricao) {
         this.id = id;
         this.nome = nome;
         this.descricao = descricao;
-        this.idLojista = idLojista;
         this.ativa = true;
-        this.produtos = new ArrayList<>();
     }
 
     public int getId() {
@@ -59,18 +62,6 @@ public class LojaVirtual {
         this.descricao = descricao;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getIdLojista() {
-        return idLojista;
-    }
-
-    public void setIdLojista(int idLojista) {
-        this.idLojista = idLojista;
-    }
-
     public boolean isAtiva() {
         return ativa;
     }
@@ -85,5 +76,21 @@ public class LojaVirtual {
 
     public void setProdutos(List<Produto> produtos) {
         this.produtos = produtos;
+    }
+
+    public List<Usuario> getUsuarios() {
+        return usuarios;
+    }
+
+    public void setUsuarios(List<Usuario> usuarios) {
+        this.usuarios = usuarios;
+    }
+
+    public Administrador getAdministrador() {
+        return administrador;
+    }
+
+    public void setAdministrador(Administrador administrador) {
+        this.administrador = administrador;
     }
 }

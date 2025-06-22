@@ -9,23 +9,27 @@ public class Produto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     private String nome;
     private String descricao;
     private double preco;
     private int estoque;
-    private int idLoja;
     private boolean disponivel;
+
+    @ManyToOne
+    @JoinColumn(name = "id_loja", nullable = false)
+    private LojaVirtual loja;
 
     public Produto() {
     }
 
-    public Produto(int id, String nome, String descricao, double preco, int estoque, int idLoja) {
+    public Produto(int id, String nome, String descricao, double preco, int estoque, LojaVirtual loja) {
         this.id = id;
         this.nome = nome;
         this.descricao = descricao;
         this.preco = preco;
         this.estoque = estoque;
-        this.idLoja = idLoja;
+        this.loja = loja;
         this.disponivel = true;
     }
 
@@ -69,20 +73,20 @@ public class Produto {
         this.estoque = estoque;
     }
 
-    public int getIdLoja() {
-        return idLoja;
-    }
-
-    public void setIdLoja(int idLoja) {
-        this.idLoja = idLoja;
-    }
-
     public boolean isDisponivel() {
         return disponivel;
     }
 
     public void setDisponivel(boolean disponivel) {
         this.disponivel = disponivel;
+    }
+
+    public LojaVirtual getLoja() {
+        return loja;
+    }
+
+    public void setLoja(LojaVirtual loja) {
+        this.loja = loja;
     }
 
     public void reduzirEstoque(int quantidade) {
@@ -103,5 +107,4 @@ public class Produto {
         }
         return preco * quantidade;
     }
-
 }
