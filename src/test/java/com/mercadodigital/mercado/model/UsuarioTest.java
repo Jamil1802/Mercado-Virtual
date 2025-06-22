@@ -1,7 +1,6 @@
 package com.mercadodigital.mercado.model;
 
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import static org.junit.jupiter.api.Assertions.*;
 class UsuarioTest {
@@ -47,9 +46,20 @@ class UsuarioTest {
     }
 
     @Test
-    void testToString() {
+    void isActivo() {
     }
 
+    @Test
+    void setActivo() {
+    }
+
+    @Test
+    void getLoja() {
+    }
+
+    @Test
+    void setLoja() {
+    }
     @Test
     void testUsuarioCompleto() {
         Usuario usuario = new Usuario(
@@ -80,4 +90,5 @@ class UsuarioTest {
         assertEquals("abc123", usuario.getSenha());
         assertEquals("Rua Central", usuario.getEndereco());
     }
+}
 }
