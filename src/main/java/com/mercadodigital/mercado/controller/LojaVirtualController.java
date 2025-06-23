@@ -2,7 +2,10 @@ package com.mercadodigital.mercado.controller;
 
 import com.mercadodigital.mercado.model.LojaVirtual;
 import com.mercadodigital.mercado.repository.LojaVirtualRepository;
+import com.mercadodigital.mercado.service.LojaVirtualService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +20,9 @@ public class LojaVirtualController {
 
     @Autowired
     private LojaVirtualRepository lojaRepository;
+
+    @Autowired
+    private LojaVirtualService lojaVirtualService;
 
     //Metodo para adicionar lojas
     @PostMapping
@@ -66,5 +72,11 @@ public class LojaVirtualController {
     @GetMapping("/admin")
     public List<LojaVirtual> listarTodasLojasParaAdmin() {
         return lojaRepository.findAll();
+    }
+
+    @GetMapping("/ativas-paginadas")
+    public ResponseEntity<Page<LojaVirtual>> listarLojasAtivas(Pageable pageable) {
+        Page<LojaVirtual> lojasPage = lojaVirtualService.listarLojasAtivas(pageable);
+        return ResponseEntity.ok(lojasPage);
     }
 }

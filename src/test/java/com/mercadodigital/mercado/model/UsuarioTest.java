@@ -91,4 +91,3 @@ class UsuarioTest {
         assertEquals("Rua Central", usuario.getEndereco());
     }
 }
-}

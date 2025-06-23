@@ -2,6 +2,8 @@ package com.mercadodigital.mercado.model;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "usuario")
 public class Usuario {
@@ -15,6 +17,18 @@ public class Usuario {
 
     @Column(unique = true, nullable = false)
     private String email;
+
+    @Column(name = "data_desativacao")
+    private LocalDateTime dataDesativacao;
+
+    @Column(name = "ultima_modificacao")
+    private LocalDateTime ultimaModificacao;
+
+    @Column(name = "modificado_por", length = 100)
+    private String modificadoPor;
+
+    @Column(name = "tipo_usuario", length = 20)
+    private String tipoUsuario = "USER";
 
     private String senha;
     private String endereco;
@@ -35,8 +49,6 @@ public class Usuario {
         this.endereco = endereco;
         this.activo = true;
     }
-
-    // Getters e Setters
 
     public int getId() {
         return id;
@@ -92,6 +104,38 @@ public class Usuario {
 
     public void setLoja(LojaVirtual loja) {
         this.loja = loja;
+    }
+
+    public LocalDateTime getDataDesativacao() {
+        return dataDesativacao;
+    }
+
+    public void setDataDesativacao(LocalDateTime dataDesativacao) {
+        this.dataDesativacao = dataDesativacao;
+    }
+
+    public LocalDateTime getUltimaModificacao() {
+        return ultimaModificacao;
+    }
+
+    public void setUltimaModificacao(LocalDateTime ultimaModificacao) {
+        this.ultimaModificacao = ultimaModificacao;
+    }
+
+    public String getModificadoPor() {
+        return modificadoPor;
+    }
+
+    public void setModificadoPor(String modificadoPor) {
+        this.modificadoPor = modificadoPor;
+    }
+
+    public String getTipoUsuario() {
+        return tipoUsuario;
+    }
+
+    public void setTipoUsuario(String tipoUsuario) {
+        this.tipoUsuario = tipoUsuario;
     }
 
     @Override

@@ -42,7 +42,7 @@ public class UsuarioController {
             return ResponseEntity.notFound().build();
         }
 
-        usuario.setAtiva(false);
+        usuario.setActivo(false);
         usuarioRepository.save(usuario);
         return ResponseEntity.ok("Usuario marcado como inativo.");
     }
